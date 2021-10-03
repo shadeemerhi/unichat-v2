@@ -1,9 +1,21 @@
+import { useEffect } from 'react'
+
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import axios, { AxiosResponse } from 'axios';
 
 const Home: NextPage = () => {
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      const data = await axios.get<any>('/api/testing');
+      console.log('FROM THE API', data); 
+    }
+    fetchData();
+  }, []);
   return (
     <div className={styles.container}>
       <Head>
