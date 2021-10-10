@@ -1,12 +1,18 @@
 import { useState } from 'react';
 
 import type { NextPage } from 'next';
+
+// import AuthProvider, { useAuth } from '../src/hooks/useAuthProvider';
+
+import { useSelector } from 'react-redux';
+import useAuth from '../src/hooks/useAuth';
+import { AppState } from '../store';
+
 import styles from '../styles/Home.module.css';
 
-import AuthProvider, { useAuth } from '../src/hooks/useAuthProvider';
-
-const Home: NextPage = () => {
-  const { onGoogleSignIn, currentUser, logout } = useAuth();
+const SignIn: NextPage = () => {
+  const user = useSelector((state: AppState) => state.user);
+  const { currentUser, onGoogleSignIn, logout } = useAuth();
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
@@ -15,10 +21,10 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <p>UNICHAT</p>
-      {currentUser
+      {user.body.firebaseUserObject
         ? (
           <>
-            <p>{currentUser.email}</p>
+            <p>{user.body.firebaseUserObject.email}</p>
             <button type="button" onClick={logout}>Logout</button>
           </>
         ) : (
@@ -30,4 +36,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default SignIn;
