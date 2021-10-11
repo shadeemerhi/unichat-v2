@@ -11,7 +11,7 @@ import { AppState } from '../store';
 import styles from '../styles/Home.module.css';
 
 const SignIn: NextPage = () => {
-  const user = useSelector((state: AppState) => state.user);
+  const user = useSelector((state: AppState) => state.userState.user);
   const { currentUser, onGoogleSignIn, logout } = useAuth();
 
   const handleSubmit = (event: any) => {
@@ -21,10 +21,10 @@ const SignIn: NextPage = () => {
   return (
     <div className={styles.container}>
       <p>UNICHAT</p>
-      {user.body.firebaseUserObject
+      {user
         ? (
           <>
-            <p>{user.body.firebaseUserObject.email}</p>
+            <p>{user.email}</p>
             <button type="button" onClick={logout}>Logout</button>
           </>
         ) : (
