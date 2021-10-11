@@ -1,34 +1,25 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+} from 'firebase/auth';
 
 import '../firebase';
 import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
-import { logUserIn, logUserOut } from '../actions/user';
+import { logUserIn, logUserOut, setUserError } from '../actions/user';
 
 const auth = getAuth();
 
-// const AuthContext = React.createContext();
-
-// export const useAuth = () => useContext(AuthContext);
-
 const useAuth = () => {
-  const [currentUser, setCurrentUser] = useState(null);
   const dispatch = useDispatch();
   const onGoogleSignIn = async () => {
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    const { user } = result;
-    console.log(
-      'HERE IS ALL STUFF',
-      result,
-      credential.providerId,
-      token,
-      user,
-    );
+    signInWithPopup(auth, new GoogleAuthProvider());
   };
 
   const logout = () => auth.signOut();
@@ -39,13 +30,25 @@ const useAuth = () => {
       const user = userAPIResponse.data;
       return user;
     } catch (error) {
+      return console.log(error);
+    }
+  };
+
+  const findUserByEmail = async (email) => {
+    try {
+      const userAPIResponse = await axios.get(`/users/email/${email}`);
+      const user = userAPIResponse.data;
+      return user;
+    } catch (error) {
       console.log(error);
     }
   };
 
-  const handleAuthenticatedUser = async (firebaseUserObject) => {
+  const handleGoogleAuthUser = async (firebaseUserObject) => {
     // Check if the user exists in the application database
-    const existingUser = await findUserByFirebaseUID(firebaseUserObject.uid);
+    const existingUser = await findUserByFirebaseUID(
+      firebaseUserObject.uid,
+    );
     if (existingUser) {
       return dispatch(logUserIn(existingUser));
     }
@@ -54,15 +57,36 @@ const useAuth = () => {
     return dispatch(logUserIn(firebaseUserObject));
   };
 
-  // Handles currentUser object state by subscribing to changes to said object
+  const signup = async (email, password) => {
+    try {
+      /**
+       * Handle existing users using application database rather than Firebase
+       * so we can check provider
+       */
+      const existingUser = await findUserByEmail(email);
+      if (existingUser) {
+        if (existingUser.providerData[0].providerId === 'google.com') {
+          throw new Error('It looks like you previously signed in using Google');
+        }
+        throw new Error('A user with that email already exists');
+      }
+      // Only new users will get here
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      dispatch(setUserError(error.message));
+    }
+  };
+
+  // Handles current user object state by subscribing to changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log('HERE IS THE USER', user);
       if (!user) {
-        dispatch(logUserOut());
-        return;
+        return dispatch(logUserOut());
       }
-      handleAuthenticatedUser(user);
+      if (user.providerData[0].providerId === 'google.com') {
+        return handleGoogleAuthUser(user);
+      }
+      console.log('NON-OAUTH USERS', user);
     });
 
     return unsubscribe;
@@ -70,7 +94,7 @@ const useAuth = () => {
 
   return {
     onGoogleSignIn,
-    currentUser,
+    signup,
     logout,
   };
 };

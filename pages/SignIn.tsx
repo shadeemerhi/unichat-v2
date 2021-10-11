@@ -11,26 +11,51 @@ import { AppState } from '../store';
 import styles from '../styles/Home.module.css';
 
 const SignIn: NextPage = () => {
-  const user = useSelector((state: AppState) => state.userState.user);
-  const { currentUser, onGoogleSignIn, logout } = useAuth();
+  // Local state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Application state
+  const userState = useSelector((state: AppState) => state.userState);
+  const { signup, onGoogleSignIn, logout } = useAuth();
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
     onGoogleSignIn();
   };
+
+  const handleSignUp = async (event: any) => {
+    event.preventDefault();
+    if (!email || !password) return;
+    try {
+      signup(email, password);
+    } catch (error) {
+      console.log('INSIDE OF SIGNIN ERROR', error);
+    }
+  };
   return (
     <div className={styles.container}>
       <p>UNICHAT</p>
-      {user
+      {userState.user
         ? (
           <>
-            <p>{user.email}</p>
+            <p>{userState.user.email}</p>
             <button type="button" onClick={logout}>Logout</button>
           </>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <button type="submit">Login With Google</button>
-          </form>
+          <>
+            <form onSubmit={handleSignUp}>
+              <input name="email" type="email" placeholder="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+              <input name="password" type="password" placeholder="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+              <button type="submit">Sign Up</button>
+            </form>
+            {userState.error && <p>{userState.error}</p>}
+            <br />
+            <p>OR</p>
+            <form onSubmit={handleSubmit}>
+              <button type="submit">Login With Google</button>
+            </form>
+          </>
         )}
     </div>
   );
