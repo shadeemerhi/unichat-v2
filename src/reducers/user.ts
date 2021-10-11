@@ -1,4 +1,6 @@
-import { UserActionTypes, LOGIN, LOGOUT } from '../actions/user';
+import {
+  UserActionTypes, LOGIN, LOGOUT, SET_ERROR,
+} from '../actions/user';
 
 export type User = {
     uid: string,
@@ -24,11 +26,18 @@ const userReducer = (state = initialState, action: UserActionTypes) => {
       return {
         ...state,
         user: action.payload,
+        error: '',
       };
     case LOGOUT:
       return {
         ...state,
         user: null,
+        error: '',
+      };
+    case SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
       };
     default:
       return state;
