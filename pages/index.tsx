@@ -15,13 +15,11 @@ const Home = () => {
   const counter = useSelector((state: AppState) => state.counter);
 
   return (
-  // <AuthProvider>
     <div className={styles.container}>
       <p>UNICHAT</p>
       <p>{counter}</p>
       <SignIn />
     </div>
-  // </AuthProvider>
   );
 };
 
