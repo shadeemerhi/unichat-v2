@@ -27,11 +27,7 @@ const SignIn: NextPage = () => {
   const handleSignUp = async (event: any) => {
     event.preventDefault();
     if (!email || !password) return;
-    try {
-      signup(email, password);
-    } catch (error) {
-      console.log('INSIDE OF SIGNIN ERROR', error);
-    }
+    signup(email, password);
   };
   return (
     <div className={styles.container}>
