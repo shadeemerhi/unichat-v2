@@ -4,7 +4,7 @@ import userReducer from './user';
 
 const allReducers = combineReducers({
   counter: counterReducer,
-  user: userReducer,
+  userState: userReducer,
 });
 
 export default allReducers;
