@@ -1,21 +1,19 @@
 import { UserActionTypes, LOGIN, LOGOUT } from '../actions/user';
 
 export type User = {
-    firebaseUserObject: {} | null,
+    uid: string,
+    email: string,
     username: string,
 };
 
 export interface UserState {
-    body: User,
+    user: User | null,
     loading: boolean,
     error: string
 }
 
 const initialState: UserState = {
-  body: {
-    firebaseUserObject: null,
-    username: '',
-  },
+  user: null,
   loading: false,
   error: '',
 };
@@ -25,15 +23,12 @@ const userReducer = (state = initialState, action: UserActionTypes) => {
     case LOGIN:
       return {
         ...state,
-        body: {
-          ...state.body,
-          firebaseUserObject: action.payload.firebaseUserObject,
-        },
+        user: action.payload,
       };
     case LOGOUT:
       return {
         ...state,
-        body: { ...initialState.body },
+        user: null,
       };
     default:
       return state;
