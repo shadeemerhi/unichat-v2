@@ -1,5 +1,5 @@
 import Navbar from '../Nav/Navbar';
-import AuthModal from '../Nav/AuthModal';
+import AuthModal from '../Nav/AuthModal/AuthModal';
 
 interface LayoutProps {
     children: any
