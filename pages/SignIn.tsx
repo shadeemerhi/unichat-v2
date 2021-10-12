@@ -6,11 +6,7 @@ import { AppState } from '../store';
 
 import styles from '../styles/Home.module.css';
 
-interface SignInProps {
-  handleOpen: any;
-}
-
-const SignIn = ({ handleOpen }: SignInProps): JSX.Element => {
+const SignIn = (): JSX.Element => {
   // Local state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +27,6 @@ const SignIn = ({ handleOpen }: SignInProps): JSX.Element => {
   };
   return (
     <div className={styles.container}>
-      <button type="button" onClick={handleOpen}>Open Modal</button>
       {userState.user
         ? (
           <>
