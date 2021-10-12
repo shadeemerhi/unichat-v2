@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import counterReducer from './counter';
 import userReducer from './user';
+import authModalReducer from './authModal';
 
 const allReducers = combineReducers({
-  counter: counterReducer,
   userState: userReducer,
+  authModal: authModalReducer,
 });
 
 export default allReducers;
