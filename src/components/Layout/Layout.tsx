@@ -1,12 +1,14 @@
 import Navbar from '../Nav/Navbar';
+import AuthModal from '../Nav/AuthModal';
 
-type LayoutProps = {
+interface LayoutProps {
     children: any
 }
 
 const Layout = ({ children }: LayoutProps) => (
   <>
     <Navbar />
+    <AuthModal />
     <main>{children}</main>
   </>
 );
