@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-import type { NextPage } from 'next';
-
-// import AuthProvider, { useAuth } from '../src/hooks/useAuthProvider';
-
 import { useSelector } from 'react-redux';
 import useAuth from '../src/hooks/useAuth';
 import { AppState } from '../store';
 
 import styles from '../styles/Home.module.css';
 
-const SignIn: NextPage = () => {
+interface SignInProps {
+  handleOpen: any;
+}
+
+const SignIn = ({ handleOpen }: SignInProps): JSX.Element => {
   // Local state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +31,7 @@ const SignIn: NextPage = () => {
   };
   return (
     <div className={styles.container}>
-      <p>UNICHAT</p>
+      <button type="button" onClick={handleOpen}>Open Modal</button>
       {userState.user
         ? (
           <>

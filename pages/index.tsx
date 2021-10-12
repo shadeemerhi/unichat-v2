@@ -1,15 +1,24 @@
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
-import SignIn from './SignIn';
+// Redux
+import { useSelector } from 'react-redux';
 import { AppState } from '../store';
+
+// Components
+import SignIn from './SignIn';
+import TransitionModal from '../src/components/Nav/AuthModal';
 
 const Home = () => {
   const counter = useSelector((state: AppState) => state.counter);
 
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <div>
-      <p>{counter}</p>
-      <SignIn />
+      <TransitionModal open={open} handleOpen={handleOpen} handleClose={handleClose} />
+      <SignIn handleOpen={handleOpen} />
     </div>
   );
 };
