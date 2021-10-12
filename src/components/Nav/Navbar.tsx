@@ -3,6 +3,10 @@ import React from 'react';
 import { makeStyles, useTheme } from '@mui/styles';
 import { Theme } from '@mui/material';
 
+// Redux
+import { useDispatch } from 'react-redux';
+import { openModal, toggleModalView } from '../../actions/authModal';
+
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
@@ -46,15 +50,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Navbar = (): JSX.Element => {
+  // Styles
   const theme = useTheme();
-
   const classes = useStyles(theme);
+
+  const dispatch = useDispatch();
+
+  const openLogin = () => {
+    dispatch(openModal());
+    dispatch(toggleModalView('login'));
+  };
+
+  const openSignup = () => {
+    dispatch(openModal());
+    dispatch(toggleModalView('signup'));
+  };
+
   return (
     <div className={classes.root}>
       <p className={classes.logo}>UniChat</p>
       <div className={classes.buttonContainer}>
-        <button type="button" className={`${classes.button} ${classes.loginButton}`}>Log In</button>
-        <button type="button" className={`${classes.button} ${classes.signupButton}`}>Sign Up</button>
+        <button type="button" className={`${classes.button} ${classes.loginButton}`} onClick={openLogin}>Log In</button>
+        <button type="button" className={`${classes.button} ${classes.signupButton}`} onClick={openSignup}>Sign Up</button>
       </div>
     </div>
   );
