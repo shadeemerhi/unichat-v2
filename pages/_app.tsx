@@ -1,16 +1,37 @@
-import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+
+// MUI
+import { createTheme, ThemeProvider } from '@mui/material';
+
+// Redux
 import { Provider } from 'react-redux';
 import store from '../store';
 
+// Styles and layout
+import '../styles/globals.css';
 import Layout from '../src/components/Layout/Layout';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: 'rgb(255, 90, 95)',
+      light: 'rgb(255, 90, 95, 0.10)',
+      dark: 'rgb(255, 90, 95, 0.80)',
+    },
+  },
+  typography: {
+    fontWeightBold: 700,
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ThemeProvider theme={theme}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
     </Provider>
   );
 }
