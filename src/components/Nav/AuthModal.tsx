@@ -1,10 +1,16 @@
 import * as React from 'react';
+
+// MUI
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+
+// Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { closeModal } from '../../actions/authModal';
+import { AppState } from '../../../store';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -18,38 +24,55 @@ const style = {
   p: 4,
 };
 
-interface AuthModalProps {
-  open: boolean;
-  handleOpen: any;
-  handleClose: any;
-}
+const AuthModal = () => {
+  const open = useSelector((state: AppState) => state.authModal.open);
+  const view = useSelector((state: AppState) => state.authModal.view);
+  const dispatch = useDispatch();
 
-const TransitionModal = ({ open, handleOpen, handleClose }: AuthModalProps) => (
-  <div>
-    {/* <Button onClick={handleOpen}>Open modal</Button> */}
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      open={open}
-      onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={open}>
-        <Box sx={style}>
-          <Typography id="transition-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Fade>
-    </Modal>
-  </div>
-);
+  const handleClose = () => {
+    dispatch(closeModal());
+  };
 
-export default TransitionModal;
+  return (
+    <div>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style}>
+            {view === 'login' && (
+              <>
+                <Typography id="transition-modal-title" variant="h6" component="h2">
+                  LOGIN
+                </Typography>
+                <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                  Welcome the login page
+                </Typography>
+              </>
+            )}
+            {view === 'signup' && (
+            <>
+              <Typography id="transition-modal-title" variant="h6" component="h2">
+                SIGNUP
+              </Typography>
+              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                Welcome to the sign up page
+              </Typography>
+            </>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
+    </div>
+  );
+};
+
+export default AuthModal;
