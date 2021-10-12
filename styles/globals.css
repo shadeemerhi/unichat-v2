@@ -13,3 +13,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+button {
+  font-family: 'Noto Sans', sans-serif;
+  cursor: pointer;
+  border-radius: 20px;
+  border: none;
+  height: 30px;
+}
