@@ -31,13 +31,49 @@ const modalBoxStyle = {
   bgcolor: 'background.paper',
   borderRadius: '10px',
   boxShadow: 24,
-  p: 4,
+  p: 2,
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
   headerText: {
+    color: theme.palette.primary.main,
+    marginBottom: '10px',
     fontSize: '16pt',
   },
+
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '240px',
+    alignItems: 'center',
+  },
+
+  formInput: {
+    margin: '4px 0px',
+    width: '100%',
+    height: '30px',
+    padding: '6px',
+    borderRadius: '8px',
+    border: `1px solid ${theme.palette.secondary.light}`,
+  },
+
+  submitButton: {
+    width: '150px',
+    color: 'white',
+    margin: '16px 0px',
+    backgroundColor: theme.palette.primary.main,
+  },
+
+  toggleViewContainer: {
+    display: 'flex',
+    fontSize: theme.typography.fontSize,
+  },
+
+  toggleViewText: {
+    color: theme.palette.primary.main,
+    marginLeft: '4px',
+  },
+
 }));
 
 const AuthModal = (): JSX.Element => {
@@ -72,8 +108,8 @@ const AuthModal = (): JSX.Element => {
     >
       <Fade in={open}>
         <Box sx={modalBoxStyle}>
-          {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} headerClass={classes.headerText} />}
-          {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} headerClass={classes.headerText} />}
+          {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
         </Box>
       </Fade>
     </Modal>
