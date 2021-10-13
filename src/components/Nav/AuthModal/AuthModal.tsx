@@ -16,6 +16,7 @@ import { AppState } from '../../../../store';
 // Components
 import Login from './Login';
 import SignUp from './Signup';
+import GoogleLogin from './GoogleLogin';
 
 // Modal box styling object
 const modalBoxStyle = {
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 
   submitButton: {
-    width: '150px',
+    width: '130px',
     color: 'white',
     margin: '16px 0px',
     backgroundColor: theme.palette.primary.main,
@@ -110,6 +111,8 @@ const AuthModal = (): JSX.Element => {
         <Box sx={modalBoxStyle}>
           {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
           {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          <p>OR</p>
+          <GoogleLogin />
         </Box>
       </Fade>
     </Modal>
