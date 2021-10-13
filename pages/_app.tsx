@@ -18,9 +18,14 @@ const theme = createTheme({
       light: 'rgb(255, 90, 95, 0.10)',
       dark: 'rgb(255, 90, 95, 0.80)',
     },
+    secondary: {
+      main: '#C7C7C7',
+      light: '#C7C7C7',
+    },
   },
   typography: {
     fontWeightBold: 700,
+    fontSize: 14,
   },
 });
 
