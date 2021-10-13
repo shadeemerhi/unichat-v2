@@ -4,8 +4,9 @@ import { makeStyles, useTheme } from '@mui/styles';
 import { Theme } from '@mui/material';
 
 // Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal, toggleModalView } from '../../actions/authModal';
+import { AppState } from '../../../store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -55,6 +56,7 @@ const Navbar = (): JSX.Element => {
   const classes = useStyles(theme);
 
   const dispatch = useDispatch();
+  const user = useSelector((state: AppState) => state.userState.user);
 
   const openLogin = () => {
     dispatch(openModal());
@@ -69,10 +71,12 @@ const Navbar = (): JSX.Element => {
   return (
     <div className={classes.root}>
       <p className={classes.logo}>UniChat</p>
+      {!user && (
       <div className={classes.buttonContainer}>
         <button type="button" className={`${classes.button} ${classes.loginButton}`} onClick={openLogin}>Log In</button>
         <button type="button" className={`${classes.button} ${classes.signupButton}`} onClick={openSignup}>Sign Up</button>
       </div>
+      )}
     </div>
   );
 };
