@@ -18,9 +18,7 @@ const auth = getAuth();
 
 const useAuth = () => {
   const dispatch = useDispatch();
-  const onGoogleSignIn = async () => {
-    signInWithPopup(auth, new GoogleAuthProvider());
-  };
+  const onGoogleSignIn = async () => signInWithPopup(auth, new GoogleAuthProvider());
 
   const logout = () => auth.signOut();
 
