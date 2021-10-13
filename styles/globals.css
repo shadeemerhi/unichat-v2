@@ -17,7 +17,23 @@ a {
 button {
   font-family: 'Noto Sans', sans-serif;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 8px;
   border: none;
   height: 30px;
+}
+
+button:focus {
+  outline: none;
+}
+
+input {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+input:focus {
+  outline: none;
+}
+
+.no_margin {
+  margin: 0
 }
