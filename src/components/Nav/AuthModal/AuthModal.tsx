@@ -5,7 +5,7 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import { makeStyles, useTheme } from '@mui/styles';
+import { makeStyles, StylesContext, useTheme } from '@mui/styles';
 import { Theme } from '@mui/material';
 
 // Redux
@@ -42,10 +42,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: '16pt',
   },
 
+  outerFormContainer: {
+    width: '50%',
+  },
+
   formContainer: {
     display: 'flex',
     flexDirection: 'column',
-    width: '240px',
     alignItems: 'center',
   },
 
@@ -73,6 +76,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   toggleViewText: {
     color: theme.palette.primary.main,
     marginLeft: '4px',
+    cursor: 'pointer',
+  },
+
+  googleButton: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
+    height: '40px',
+  },
+
+  googleIcon: {
+    height: '30px',
   },
 
 }));
@@ -109,10 +125,12 @@ const AuthModal = (): JSX.Element => {
     >
       <Fade in={open}>
         <Box sx={modalBoxStyle}>
-          {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          <p>OR</p>
-          <GoogleLogin />
+          <div className={classes.outerFormContainer}>
+            {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+            {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+            <p>OR</p>
+            <GoogleLogin classes={classes} />
+          </div>
         </Box>
       </Fade>
     </Modal>
