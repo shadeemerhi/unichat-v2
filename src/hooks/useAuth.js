@@ -20,6 +20,34 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const onGoogleSignIn = async () => signInWithPopup(auth, new GoogleAuthProvider());
 
+  const signup = async (email, password) => {
+    try {
+      /**
+       * Handle existing users using application database rather than Firebase
+       * so we can check provider
+       */
+      const existingUser = await findUserByEmail(email);
+      if (existingUser) {
+        if (isGoogleUser(existingUser)) {
+          throw new Error('It looks like you previously signed in using Google');
+        }
+        throw new Error('A user with that email already exists');
+      }
+      // Only new users will get here
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      dispatch(setUserError(error.message));
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const user = 0;
+    } catch (error) {
+      dispatch(setUserError(error.message));
+    }
+  };
+
   const logout = () => auth.signOut();
 
   const findUserByFirebaseUID = async (uid) => {
@@ -55,25 +83,7 @@ const useAuth = () => {
     return dispatch(logUserIn(firebaseUserObject));
   };
 
-  const signup = async (email, password) => {
-    try {
-      /**
-       * Handle existing users using application database rather than Firebase
-       * so we can check provider
-       */
-      const existingUser = await findUserByEmail(email);
-      if (existingUser) {
-        if (existingUser.providerData[0].providerId === 'google.com') {
-          throw new Error('It looks like you previously signed in using Google');
-        }
-        throw new Error('A user with that email already exists');
-      }
-      // Only new users will get here
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      dispatch(setUserError(error.message));
-    }
-  };
+  const isGoogleUser = (user) => user.providerData[0].providerId === 'google.com';
 
   // Handles current user object state by subscribing to changes
   useEffect(() => {
@@ -92,6 +102,7 @@ const useAuth = () => {
 
   return {
     onGoogleSignIn,
+    login,
     signup,
     logout,
   };
