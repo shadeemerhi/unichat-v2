@@ -32,7 +32,7 @@ const modalBoxStyle = {
   bgcolor: 'background.paper',
   borderRadius: '10px',
   boxShadow: 24,
-  p: 2,
+  p: 4,
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
