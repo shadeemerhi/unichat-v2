@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 
 // MUI
 import Backdrop from '@mui/material/Backdrop';
@@ -101,6 +101,7 @@ const AuthModal = (): JSX.Element => {
   // State
   const open = useSelector((state: AppState) => state.authModal.open);
   const view = useSelector((state: AppState) => state.authModal.view);
+  const userState = useSelector((state: AppState) => state.userState);
   const dispatch = useDispatch();
 
   const handleClose = () => {
@@ -110,6 +111,10 @@ const AuthModal = (): JSX.Element => {
   const handleModalViewToggle = (view: string): void => {
     dispatch(toggleModalView(view));
   };
+
+  useEffect(() => {
+    if (userState.user) dispatch(closeModal());
+  }, [userState]);
 
   return (
     <Modal
