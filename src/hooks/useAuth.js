@@ -12,7 +12,12 @@ import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
 import * as firebase from '../firebase';
-import { logUserIn, logUserOut, setUserError } from '../actions/user';
+import {
+  logUserIn,
+  logUserOut,
+  setUserError,
+  setUserLoading,
+} from '../actions/user';
 
 const auth = getAuth();
 
@@ -47,6 +52,7 @@ const useAuth = () => {
       // Will need to post to database
     } catch (error) {
       dispatch(setUserError(error.message));
+      dispatch(setUserLoading(false));
     }
   };
 
@@ -67,6 +73,7 @@ const useAuth = () => {
         ? firebase.FIREBASE_ERRORS[error.message]
         : error.message;
       dispatch(setUserError(errorMessage));
+      dispatch(setUserLoading(false));
     }
   };
 
