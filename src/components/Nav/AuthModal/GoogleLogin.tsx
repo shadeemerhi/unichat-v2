@@ -18,7 +18,6 @@ const GoogleLogin = ({ classes }: GoogleLoginProps): JSX.Element => {
     event.preventDefault();
     try {
       await onGoogleSignIn();
-      dispatch(closeModal());
     } catch (error) {
       console.log(error);
     }
