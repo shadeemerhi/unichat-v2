@@ -11,6 +11,7 @@ import { Theme } from '@mui/material';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, toggleModalView } from '../../../actions/authModal';
+import { setUserLoading } from '../../../actions/user';
 import { AppState } from '../../../../store';
 
 // Components
@@ -113,8 +114,11 @@ const AuthModal = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (userState.user) dispatch(closeModal());
-  }, [userState]);
+    if (userState.user) {
+      dispatch(closeModal());
+      dispatch(setUserLoading(false));
+    }
+  }, [userState.user]);
 
   return (
     <Modal
@@ -122,22 +126,15 @@ const AuthModal = (): JSX.Element => {
       aria-describedby="transition-modal-description"
       open={open}
       onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
     >
-      <Fade in={open}>
-        <Box sx={modalBoxStyle}>
-          <div className={classes.outerFormContainer}>
-            {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-            {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-            <p>OR</p>
-            <GoogleLogin classes={classes} />
-          </div>
-        </Box>
-      </Fade>
+      <Box sx={modalBoxStyle}>
+        <div className={classes.outerFormContainer}>
+          {view === 'login' && <Login view="signup" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          {view === 'signup' && <SignUp view="login" handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          <p>OR</p>
+          <GoogleLogin classes={classes} />
+        </div>
+      </Box>
     </Modal>
   );
 };
