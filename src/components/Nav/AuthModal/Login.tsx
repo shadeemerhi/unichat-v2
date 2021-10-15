@@ -8,7 +8,7 @@ import { Theme } from '@mui/material';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { closeModal } from '../../../actions/authModal';
+import { setUserLoading, setUserError } from '../../../actions/user';
 import { AppState } from '../../../../store';
 
 // Authentication hook
@@ -25,11 +25,12 @@ interface LoginProps {
 }
 
 const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Element => {
+  // Redux
+  const dispatch = useDispatch();
+  const userState = useSelector((state: AppState) => state.userState);
   // Authentication functions
   const { login } = useAuth();
 
-  // Redux state
-  const userState = useSelector((state: AppState) => state.userState);
   // Local state
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -39,7 +40,10 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!email || !password) return;
+
+    dispatch(setUserError(''));
+    dispatch(setUserLoading(true));
+
     try {
       await login(email, password);
     } catch (error) {
@@ -52,6 +56,7 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
       <p className={`${classes.headerText} no_margin`}>Login</p>
       <input
         type="email"
+        required
         placeholder="email"
         className={classes.formInput}
         value={email}
@@ -59,6 +64,7 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
       />
       <input
         type="password"
+        required
         placeholder="password"
         className={classes.formInput}
         value={password}
@@ -69,7 +75,7 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
         {userState.error
           && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
       </span>
-      <button type="submit" className={classes.submitButton}>Login</button>
+      <button type="submit" className={classes.submitButton}>{userState.loading ? 'Loading' : 'Login'}</button>
       <span className={classes.toggleViewContainer}>
         Need an account?
         <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('signup')}>Sign Up</p>

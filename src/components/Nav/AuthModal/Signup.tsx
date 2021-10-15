@@ -8,8 +8,7 @@ import { Theme } from '@mui/material';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
-import { closeModal, toggleModalView } from '../../../actions/authModal';
-import { setUserError } from '../../../actions/user';
+import { setUserLoading, setUserError } from '../../../actions/user';
 import { AppState } from '../../../../store';
 
 // Authentication hook
@@ -49,11 +48,12 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
       dispatch(setUserError('Passwords do not match'));
       return;
     }
-
     if (password.length < 6) {
       dispatch(setUserError('Password must be at least 6 characters'));
       return;
     }
+
+    dispatch(setUserLoading(true));
     try {
       await signup(email, password);
     } catch (error) {
@@ -92,7 +92,7 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
         {userState.error
           && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
       </span>
-      <button type="submit" className={classes.submitButton}>Sign Up</button>
+      <button type="submit" className={classes.submitButton}>{userState.loading ? 'Loading' : 'Sign Up'}</button>
       <span className={classes.toggleViewContainer}>
         Already have an account?
         <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('login')}>Login</p>
