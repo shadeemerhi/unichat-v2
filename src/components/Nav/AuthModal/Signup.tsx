@@ -9,6 +9,7 @@ import { Theme } from '@mui/material';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, toggleModalView } from '../../../actions/authModal';
+import { setUserError } from '../../../actions/user';
 import { AppState } from '../../../../store';
 
 // Authentication hook
@@ -42,9 +43,19 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!email || !password) return;
+    dispatch(setUserError(''));
+
+    if (password !== confirmPassword) {
+      dispatch(setUserError('Passwords do not match'));
+      return;
+    }
+
+    if (password.length < 6) {
+      dispatch(setUserError('Password must be at least 6 characters'));
+      return;
+    }
     try {
-      signup(email, password);
+      await signup(email, password);
     } catch (error) {
       console.log(error);
     }
