@@ -1,5 +1,5 @@
 import {
-  UserActionTypes, LOGIN, LOGOUT, SET_ERROR,
+  UserActionTypes, LOGIN, LOGOUT, SET_ERROR, SET_LOADING,
 } from '../actions/user';
 
 export type User = {
@@ -33,6 +33,11 @@ const userReducer = (state = initialState, action: UserActionTypes) => {
         ...state,
         user: null,
         error: '',
+      };
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: action.payload,
       };
     case SET_ERROR:
       return {
