@@ -8,10 +8,10 @@ import {
   GoogleAuthProvider,
 } from 'firebase/auth';
 
-import '../firebase';
 import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
+import * as firebase from '../firebase';
 import { logUserIn, logUserOut, setUserError } from '../actions/user';
 
 const auth = getAuth();
@@ -23,18 +23,28 @@ const useAuth = () => {
   const signup = async (email, password) => {
     try {
       /**
-       * Handle existing users using application database rather than Firebase
-       * so we can check provider
-       */
+             * Handle existing users using application database rather than Firebase
+             * so we can check provider
+             */
       const existingUser = await findUserByEmail(email);
       if (existingUser) {
         if (isGoogleUser(existingUser)) {
-          throw new Error('It looks like you previously signed in using Google');
+          throw new Error(
+            'It looks like you previously signed in using Google',
+          );
         }
         throw new Error('A user with that email already exists');
       }
       // Only new users will get here
-      await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseResponse = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const newUser = firebaseResponse.user;
+      return await axios.post('/users', newUser);
+
+      // Will need to post to database
     } catch (error) {
       dispatch(setUserError(error.message));
     }
@@ -42,9 +52,21 @@ const useAuth = () => {
 
   const login = async (email, password) => {
     try {
-      const user = 0;
+      const existingUser = await findUserByEmail(email);
+      if (!existingUser) {
+        throw new Error('Email or password incorrect');
+      }
+      if (isGoogleUser(existingUser)) {
+        throw new Error(
+          'It looks like you previously signed in using Google',
+        );
+      }
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      dispatch(setUserError(error.message));
+      const errorMessage = firebase.FIREBASE_ERRORS[error.message]
+        ? firebase.FIREBASE_ERRORS[error.message]
+        : error.message;
+      dispatch(setUserError(errorMessage));
     }
   };
 
@@ -94,7 +116,7 @@ const useAuth = () => {
       if (user.providerData[0].providerId === 'google.com') {
         return handleGoogleAuthUser(user);
       }
-      console.log('NON-OAUTH USERS', user);
+      return dispatch(logUserIn(user));
     });
 
     return unsubscribe;
