@@ -55,7 +55,7 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
 
     dispatch(setUserLoading(true));
     try {
-      await signup(email, password);
+      signup(email, password);
     } catch (error) {
       console.log(error);
     }

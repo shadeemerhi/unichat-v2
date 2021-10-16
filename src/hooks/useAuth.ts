@@ -11,13 +11,16 @@ import {
 import axios from 'axios';
 
 import { useDispatch } from 'react-redux';
-import * as firebase from '../firebase';
 import {
   logUserIn,
   logUserOut,
   setUserError,
   setUserLoading,
 } from '../actions/user';
+import { User } from '../types/User';
+
+import '../firebase/firebase';
+import FIREBASE_ERRORS from '../firebase/errors';
 
 const auth = getAuth();
 
@@ -25,12 +28,12 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const onGoogleSignIn = async () => signInWithPopup(auth, new GoogleAuthProvider());
 
-  const signup = async (email, password) => {
+  const signup = async (email: string, password: string) => {
     try {
       /**
-             * Handle existing users using application database rather than Firebase
-             * so we can check provider
-             */
+       * Handle existing users using application database rather than Firebase
+       * so we can check provider
+      */
       const existingUser = await findUserByEmail(email);
       if (existingUser) {
         if (isGoogleUser(existingUser)) {
@@ -50,13 +53,13 @@ const useAuth = () => {
       return await axios.post('/users', newUser);
 
       // Will need to post to database
-    } catch (error) {
+    } catch (error: any) {
       dispatch(setUserError(error.message));
-      dispatch(setUserLoading(false));
+      return dispatch(setUserLoading(false));
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string) => {
     try {
       const existingUser = await findUserByEmail(email);
       if (!existingUser) {
@@ -68,10 +71,8 @@ const useAuth = () => {
         );
       }
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      const errorMessage = firebase.FIREBASE_ERRORS[error.message]
-        ? firebase.FIREBASE_ERRORS[error.message]
-        : error.message;
+    } catch (error: any) {
+      const errorMessage: string = FIREBASE_ERRORS[error.message];
       dispatch(setUserError(errorMessage));
       dispatch(setUserLoading(false));
     }
@@ -79,17 +80,17 @@ const useAuth = () => {
 
   const logout = () => auth.signOut();
 
-  const findUserByFirebaseUID = async (uid) => {
+  const findUserByFirebaseUID = async (uid: string): Promise<User | undefined> => {
     try {
       const userAPIResponse = await axios.get(`/users/${uid}`);
       const user = userAPIResponse.data;
       return user;
     } catch (error) {
-      return console.log(error);
+      dispatch(setUserError('Unable to find user'));
     }
   };
 
-  const findUserByEmail = async (email) => {
+  const findUserByEmail = async (email: string): Promise<User | undefined> => {
     try {
       const userAPIResponse = await axios.get(`/users/email/${email}`);
       const user = userAPIResponse.data;
@@ -99,9 +100,9 @@ const useAuth = () => {
     }
   };
 
-  const handleGoogleAuthUser = async (firebaseUserObject) => {
+  const handleGoogleAuthUser = async (firebaseUserObject: any) => {
     // Check if the user exists in the application database
-    const existingUser = await findUserByFirebaseUID(
+    const existingUser: User | undefined = await findUserByFirebaseUID(
       firebaseUserObject.uid,
     );
     if (existingUser) {
@@ -112,7 +113,7 @@ const useAuth = () => {
     return dispatch(logUserIn(firebaseUserObject));
   };
 
-  const isGoogleUser = (user) => user.providerData[0].providerId === 'google.com';
+  const isGoogleUser = (user: User) => user.providerData[0].providerId === 'google.com';
 
   // Handles current user object state by subscribing to changes
   useEffect(() => {

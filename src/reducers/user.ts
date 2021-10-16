@@ -2,11 +2,7 @@ import {
   UserActionTypes, LOGIN, LOGOUT, SET_ERROR, SET_LOADING,
 } from '../actions/user';
 
-export type User = {
-    uid: string,
-    email: string,
-    username: string,
-};
+import { User } from '../types/User';
 
 export interface UserState {
     user: User | null,

@@ -11,8 +11,3 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export default app;
-
-// Authentication errors
-export const FIREBASE_ERRORS = {
-  'Firebase: Error (auth/wrong-password).': 'Incorrect email or password',
-};
