@@ -20,6 +20,7 @@ import {
 import { User } from '../types/User';
 
 import '../firebase/firebase';
+// eslint-disable-next-line import/no-named-as-default
 import FIREBASE_ERRORS from '../firebase/errors';
 
 const auth = getAuth();
