@@ -83,9 +83,8 @@ const useAuth = () => {
 
   const findUserByFirebaseUID = async (uid: string): Promise<User | undefined> => {
     try {
-      const userAPIResponse = await axios.get(`/users/${uid}`);
-      const user = userAPIResponse.data;
-      return user;
+      const { data, status } = await axios.get<User>(`/users/${uid}`);
+      return data;
     } catch (error) {
       dispatch(setUserError('Unable to find user'));
     }
@@ -93,9 +92,8 @@ const useAuth = () => {
 
   const findUserByEmail = async (email: string): Promise<User | undefined> => {
     try {
-      const userAPIResponse = await axios.get(`/users/email/${email}`);
-      const user = userAPIResponse.data;
-      return user;
+      const { data, status } = await axios.get<User>(`/users/email/${email}`);
+      return data;
     } catch (error) {
       console.log(error);
     }
