@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+// Firebase
 import {
   getAuth,
   signInWithPopup,
@@ -7,9 +8,13 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
 } from 'firebase/auth';
+import { FirebaseError } from '@firebase/util';
+import '../firebase/firebase';
 
-import axios from 'axios';
+// Axios
+import axios, { AxiosResponse } from 'axios';
 
+// Redux
 import { useDispatch } from 'react-redux';
 import {
   logUserIn,
@@ -19,7 +24,6 @@ import {
 } from '../actions/user';
 import { User } from '../types/User';
 
-import '../firebase/firebase';
 // eslint-disable-next-line import/no-named-as-default
 import FIREBASE_ERRORS from '../firebase/errors';
 
@@ -35,9 +39,9 @@ const useAuth = () => {
        * Handle existing users using application database rather than Firebase
        * so we can check provider
       */
-      const existingUser = await findUserByEmail(email);
-      if (existingUser) {
-        if (isGoogleUser(existingUser)) {
+      const { data } = await findUserByEmail(email);
+      if (data) {
+        if (isGoogleUser(data)) {
           throw new Error(
             'It looks like you previously signed in using Google',
           );
@@ -62,18 +66,24 @@ const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const existingUser = await findUserByEmail(email);
-      if (!existingUser) {
-        throw new Error('Email or password incorrect');
+      const { data } = await findUserByEmail(email);
+      if (!data) {
+        throw new Error('Incorrect email or password');
       }
-      if (isGoogleUser(existingUser)) {
+      if (isGoogleUser(data)) {
         throw new Error(
           'It looks like you previously signed in using Google',
         );
       }
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
-      const errorMessage: string = FIREBASE_ERRORS[error.message];
+      let errorMessage = error.message;
+      if (error?.response?.status === 500) {
+        errorMessage = 'There seems to be a problem on our end';
+      }
+      if (error instanceof FirebaseError) {
+        errorMessage = FIREBASE_ERRORS[error.message] || FIREBASE_ERRORS.default;
+      }
       dispatch(setUserError(errorMessage));
       dispatch(setUserLoading(false));
     }
@@ -81,36 +91,22 @@ const useAuth = () => {
 
   const logout = () => auth.signOut();
 
-  const findUserByFirebaseUID = async (uid: string): Promise<User | undefined> => {
-    try {
-      const { data, status } = await axios.get<User>(`/users/${uid}`);
-      return data;
-    } catch (error) {
-      dispatch(setUserError('Unable to find user'));
-    }
-  };
-
-  const findUserByEmail = async (email: string): Promise<User | undefined> => {
-    try {
-      const { data, status } = await axios.get<User>(`/users/email/${email}`);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleGoogleAuthUser = async (firebaseUserObject: any) => {
     // Check if the user exists in the application database
-    const existingUser: User | undefined = await findUserByFirebaseUID(
+    const { data } = await findUserByFirebaseUID(
       firebaseUserObject.uid,
     );
-    if (existingUser) {
-      return dispatch(logUserIn(existingUser));
+    if (data) {
+      return dispatch(logUserIn(data));
     }
     // Creating a new user
     await axios.post('/users', firebaseUserObject);
     return dispatch(logUserIn(firebaseUserObject));
   };
+
+  const findUserByFirebaseUID = async (uid: string): Promise<AxiosResponse<User>> => axios.get<User>(`/users/${uid}`);
+
+  const findUserByEmail = async (email: string): Promise<AxiosResponse<User>> => axios.get<User>(`/users/email/${email}`);
 
   const isGoogleUser = (user: User) => user.providerData[0].providerId === 'google.com';
 
