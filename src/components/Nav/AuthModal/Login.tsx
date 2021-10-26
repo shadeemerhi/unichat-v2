@@ -2,10 +2,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, FormEvent } from 'react';
 
-// MUI
-import { makeStyles, useTheme } from '@mui/styles';
-import { Theme } from '@mui/material';
-
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserLoading, setUserError } from '../../../actions/user';
@@ -14,17 +10,12 @@ import { AppState } from '../../../../store';
 // Authentication hook
 import useAuth from '../../../hooks/useAuth';
 
-const useStyles = makeStyles((theme: Theme) => ({
-
-}));
-
 interface LoginProps {
-  view: string;
   handleModalViewToggle: (view: string) => void;
   classes: any;
 }
 
-const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Element => {
+const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
   // Redux
   const dispatch = useDispatch();
   const userState = useSelector((state: AppState) => state.userState);
@@ -34,9 +25,6 @@ const Login = ({ handleModalViewToggle, view, classes }: LoginProps): JSX.Elemen
   // Local state
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  // Styling
-  const theme = useTheme();
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
