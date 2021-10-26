@@ -2,6 +2,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { FormEvent, useState } from 'react';
 
+// MUI
+import { CircularProgress } from '@mui/material';
+
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserLoading, setUserError } from '../../../actions/user';
@@ -80,7 +83,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
         {userState.error
           && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
       </span>
-      <button type="submit" className={classes.submitButton}>{userState.loading ? 'Loading' : 'Sign Up'}</button>
+      <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Sign Up'}</button>
       <span className={classes.toggleViewContainer}>
         Already have an account?
         <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('login')}>Login</p>

@@ -2,6 +2,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, FormEvent } from 'react';
 
+// MUI
+import { CircularProgress } from '@mui/material';
+
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserLoading, setUserError } from '../../../actions/user';
@@ -58,12 +61,11 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
         value={password}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
       />
-      {/* Will change below to error container */}
       <span className={classes.toggleViewContainer}>
         {userState.error
           && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
       </span>
-      <button type="submit" className={classes.submitButton}>{userState.loading ? 'Loading' : 'Login'}</button>
+      <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Login'}</button>
       <span className={classes.toggleViewContainer}>
         Need an account?
         <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('signup')}>Sign Up</p>
