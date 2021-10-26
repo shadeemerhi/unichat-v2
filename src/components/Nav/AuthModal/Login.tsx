@@ -14,7 +14,7 @@ import { AppState } from '../../../../store';
 import useAuth from '../../../hooks/useAuth';
 
 interface LoginProps {
-  handleModalViewToggle: (view: string) => void;
+  handleModalViewToggle: (view: number) => void;
   classes: any;
 }
 
@@ -68,7 +68,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
       <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Login'}</button>
       <span className={classes.toggleViewContainer}>
         Need an account?
-        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('signup')}>Sign Up</p>
+        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle(1)}>Sign Up</p>
       </span>
     </form>
   );

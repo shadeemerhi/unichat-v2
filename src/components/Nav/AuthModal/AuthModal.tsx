@@ -112,14 +112,14 @@ const AuthModal = (): JSX.Element => {
     dispatch(closeModal());
   };
 
-  const handleModalViewToggle = (view: string): void => {
+  const handleModalViewToggle = (view: number): void => {
     dispatch(toggleModalView(view));
   };
 
   useEffect(() => {
     if (userState.user) {
       if (userState.firstLogin) {
-        return handleModalViewToggle('lol');
+        return handleModalViewToggle(2);
       }
       dispatch(closeModal());
       dispatch(setUserLoading(false));
@@ -137,7 +137,7 @@ const AuthModal = (): JSX.Element => {
         <div className={classes.outerFormContainer}>
           {view === 'login' && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
           {view === 'signup' && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 'lol' && <p>Welcome new user</p>}
+          {view === 2 && <p>Welcome new user</p>}
           <p>OR</p>
           <GoogleLogin classes={classes} />
         </div>
