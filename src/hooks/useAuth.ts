@@ -101,7 +101,7 @@ const useAuth = () => {
     }
     // Creating a new user
     await axios.post('/users', firebaseUserObject);
-    return dispatch(logUserIn(firebaseUserObject));
+    return dispatch(logUserIn(firebaseUserObject, true));
   };
 
   const findUserByFirebaseUID = async (uid: string): Promise<AxiosResponse<User>> => axios.get<User>(`/users/${uid}`);
@@ -119,9 +119,12 @@ const useAuth = () => {
       if (user.providerData[0].providerId === 'google.com') {
         return handleGoogleAuthUser(user);
       }
+      // Detect new users
+      if (user.metadata.creationTime === user.metadata.lastSignInTime) {
+        return dispatch(logUserIn(user, true));
+      }
       return dispatch(logUserIn(user));
     });
-
     return unsubscribe;
   }, []);
 

@@ -8,7 +8,8 @@ export const SET_LOADING = 'SET_LOADING';
 // Action types
 interface LoginAction {
   type: typeof LOGIN,
-  payload: User
+  user: User,
+  firstLogin: boolean
 }
 
 interface LogoutAction {
@@ -28,9 +29,10 @@ interface LoadingAction {
 export type UserActionTypes = LoginAction | LogoutAction | ErrorAction | LoadingAction;
 
 // Action creators
-export const logUserIn = (user: User): UserActionTypes => ({
+export const logUserIn = (user: User, firstLogin: boolean = false): UserActionTypes => ({
   type: LOGIN,
-  payload: user,
+  user,
+  firstLogin,
 });
 
 export const logUserOut = (): UserActionTypes => ({

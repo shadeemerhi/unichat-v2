@@ -7,12 +7,14 @@ import { User } from '../types/User';
 export interface UserState {
     user: User | null,
     loading: boolean,
+    firstLogin: boolean,
     error: string
 }
 
 const initialState: UserState = {
   user: null,
   loading: false,
+  firstLogin: false,
   error: '',
 };
 
@@ -21,7 +23,8 @@ const userReducer = (state = initialState, action: UserActionTypes) => {
     case LOGIN:
       return {
         ...state,
-        user: action.payload,
+        user: action.user,
+        firstLogin: action.firstLogin,
         error: '',
       };
     case LOGOUT:
