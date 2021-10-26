@@ -10,6 +10,7 @@ import { Theme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, toggleModalView } from '../../../actions/authModal';
 import { setUserLoading } from '../../../actions/user';
+import { UserState } from '../../../reducers/user';
 import { AppState } from '../../../../store';
 
 // Components
@@ -103,7 +104,8 @@ const AuthModal = (): JSX.Element => {
   // State
   const open = useSelector((state: AppState) => state.authModal.open);
   const view = useSelector((state: AppState) => state.authModal.view);
-  const userState = useSelector((state: AppState) => state.userState);
+  const userState: UserState = useSelector((state: AppState) => state.userState);
+
   const dispatch = useDispatch();
 
   const handleClose = () => {
