@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
 
 // MUI
-import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import { makeStyles, StylesContext, useTheme } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import { Theme } from '@mui/material';
 
 // Redux
