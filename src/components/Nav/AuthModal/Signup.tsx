@@ -54,7 +54,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
 
   return (
     <form className={classes.formContainer} onSubmit={onSubmit}>
-      <p className={`${classes.headerText} no_margin`}>Create an Account</p>
+      <p className={`${classes.headerText} ${classes.coloredText} no_margin`}>Create an Account</p>
       <input
         type="email"
         placeholder="email"
@@ -81,7 +81,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
       {/* Will change below to error container */}
       <span className={classes.toggleViewContainer}>
         {userState.error
-          && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
+          && <p className={`${classes.toggleViewText} no_margin cursor`}>{userState.error}</p>}
       </span>
       <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Sign Up'}</button>
       <span className={classes.toggleViewContainer}>
