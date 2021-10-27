@@ -16,6 +16,7 @@ import { AppState } from '../../../../store';
 // Components
 import Login from './Login';
 import SignUp from './Signup';
+import CreateUserName from './CreateUserName';
 import GoogleLogin from './GoogleLogin';
 
 // Modal box styling object
@@ -146,7 +147,7 @@ const AuthModal = (): JSX.Element => {
             <GoogleLogin classes={classes} />
           </>
           )}
-          {view === 2 && <p>Welcome new user</p>}
+          {view === 2 && <CreateUserName />}
         </div>
       </Box>
     </Modal>
