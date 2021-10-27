@@ -37,3 +37,11 @@ input:focus {
 .no_margin {
   margin: 0
 }
+
+.small_font {
+  font-size: 10pt;
+}
+
+.cursor {
+  cursor: pointer;
+}
