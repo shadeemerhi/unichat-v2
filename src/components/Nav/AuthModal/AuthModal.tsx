@@ -110,6 +110,7 @@ const AuthModal = (): JSX.Element => {
 
   const handleClose = () => {
     dispatch(closeModal());
+    if (userState.user) dispatch(setUserLoading(false));
   };
 
   const handleModalViewToggle = (view: number): void => {
@@ -135,15 +136,15 @@ const AuthModal = (): JSX.Element => {
     >
       <Box sx={modalBoxStyle}>
         <div className={classes.outerFormContainer}>
-          {view < 2 && (
-            <>
-              {view === 0
+          {view === 0
                 && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-              {view === 1
+          {view === 1
                 && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-              <p>OR</p>
-              <GoogleLogin classes={classes} />
-            </>
+          {view < 2 && (
+          <>
+            <p>OR</p>
+            <GoogleLogin classes={classes} />
+          </>
           )}
           {view === 2 && <p>Welcome new user</p>}
         </div>
