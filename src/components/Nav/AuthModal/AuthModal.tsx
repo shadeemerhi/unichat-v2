@@ -135,11 +135,17 @@ const AuthModal = (): JSX.Element => {
     >
       <Box sx={modalBoxStyle}>
         <div className={classes.outerFormContainer}>
-          {view === 'login' && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 'signup' && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          {view < 2 && (
+            <>
+              {view === 0
+                && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+              {view === 1
+                && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+              <p>OR</p>
+              <GoogleLogin classes={classes} />
+            </>
+          )}
           {view === 2 && <p>Welcome new user</p>}
-          <p>OR</p>
-          <GoogleLogin classes={classes} />
         </div>
       </Box>
     </Modal>
