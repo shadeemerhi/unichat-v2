@@ -38,9 +38,12 @@ const modalBoxStyle = {
 
 const useStyles = makeStyles((theme: Theme) => ({
   headerText: {
-    color: theme.palette.primary.main,
     marginBottom: '10px',
     fontSize: '16pt',
+  },
+
+  coloredText: {
+    color: theme.palette.primary.main,
   },
 
   outerFormContainer: {
@@ -80,7 +83,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   toggleViewText: {
     color: theme.palette.primary.main,
     marginLeft: '4px',
-    cursor: 'pointer',
   },
 
   googleButton: {
@@ -110,6 +112,8 @@ const AuthModal = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
+    // Prevent modal close without username creation/acceptance
+    if (view === 0) return; // Will change view to 2 after development is complete
     dispatch(closeModal());
     if (userState.user) dispatch(setUserLoading(false));
   };
@@ -137,7 +141,7 @@ const AuthModal = (): JSX.Element => {
     >
       <Box sx={modalBoxStyle}>
         <div className={classes.outerFormContainer}>
-          {view === 0
+          {/* {view === 0
                 && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
           {view === 1
                 && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
@@ -146,8 +150,8 @@ const AuthModal = (): JSX.Element => {
             <p>OR</p>
             <GoogleLogin classes={classes} />
           </>
-          )}
-          {view === 2 && <CreateUserName />}
+          )} */}
+          {true && <CreateUserName classes={classes} />}
         </div>
       </Box>
     </Modal>
