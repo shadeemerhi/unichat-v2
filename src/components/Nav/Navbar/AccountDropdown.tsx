@@ -90,14 +90,15 @@ const AccountMenu = (): JSX.Element => {
         <MenuItem>
           <Avatar src={user.photoURL} />
           {' '}
-          <text className={classes.menuItemText}>My account</text>
+          My account
         </MenuItem>
         <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <text className={classes.menuItemText}>Logout</text>
+
+          Logout
         </MenuItem>
       </Menu>
     </>

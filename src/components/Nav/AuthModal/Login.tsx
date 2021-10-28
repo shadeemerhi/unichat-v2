@@ -14,16 +14,17 @@ import { AppState } from '../../../../store';
 import useAuth from '../../../hooks/useAuth';
 
 interface LoginProps {
-  handleModalViewToggle: (view: string) => void;
+  login: any;
+  handleModalViewToggle: (view: number) => void;
   classes: any;
 }
 
-const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
+const Login = ({ login, handleModalViewToggle, classes }: LoginProps): JSX.Element => {
   // Redux
   const dispatch = useDispatch();
   const userState = useSelector((state: AppState) => state.userState);
   // Authentication functions
-  const { login } = useAuth();
+  // const { login } = useAuth();
 
   // Local state
   const [email, setEmail] = useState<string>('');
@@ -44,7 +45,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
 
   return (
     <form className={classes.formContainer} onSubmit={onSubmit}>
-      <p className={`${classes.headerText} no_margin`}>Login</p>
+      <p className={`${classes.headerText} ${classes.coloredText} no_margin`}>Login</p>
       <input
         type="email"
         required
@@ -63,12 +64,12 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
       />
       <span className={classes.toggleViewContainer}>
         {userState.error
-          && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
+          && <p className={`${classes.toggleViewText} no_margin cursor`}>{userState.error}</p>}
       </span>
       <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Login'}</button>
       <span className={classes.toggleViewContainer}>
         Need an account?
-        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('signup')}>Sign Up</p>
+        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle(1)}>Sign Up</p>
       </span>
     </form>
   );

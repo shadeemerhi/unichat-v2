@@ -7,13 +7,11 @@ import { closeModal, toggleModalView } from '../../../actions/authModal';
 import useAuth from '../../../hooks/useAuth';
 
 interface GoogleLoginProps {
-  classes: unknown;
+  onGoogleSignIn: any;
+  classes: any;
 }
 
-const GoogleLogin = ({ classes }: GoogleLoginProps): JSX.Element => {
-  const { onGoogleSignIn } = useAuth();
-  const dispatch = useDispatch();
-
+const GoogleLogin = ({ onGoogleSignIn, classes }: GoogleLoginProps): JSX.Element => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
@@ -24,7 +22,7 @@ const GoogleLogin = ({ classes }: GoogleLoginProps): JSX.Element => {
   };
   return (
     <button type="button" className={classes.googleButton} onClick={handleSubmit}>
-      <img src="google.svg" className={classes.googleIcon }/>
+      <img src="google.svg" className={classes.googleIcon} />
       Continue With Google
     </button>
   );

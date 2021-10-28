@@ -4,12 +4,12 @@ import {
 
 export interface AuthModalState {
   open: boolean;
-  view: string;
+  view: number;
 }
 
 const initialState: AuthModalState = {
   open: false,
-  view: 'login',
+  view: 0,
 };
 
 const authModalReducer = (state = initialState, action: AuthModalActionTypes) => {

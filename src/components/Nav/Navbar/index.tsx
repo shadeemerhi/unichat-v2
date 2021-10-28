@@ -64,12 +64,12 @@ const Navbar = (): JSX.Element => {
 
   const openLogin = () => {
     dispatch(openModal());
-    dispatch(toggleModalView('login'));
+    dispatch(toggleModalView(0));
   };
 
   const openSignup = () => {
     dispatch(openModal());
-    dispatch(toggleModalView('signup'));
+    dispatch(toggleModalView(1));
   };
 
   return (

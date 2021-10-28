@@ -13,7 +13,7 @@ interface CloseAction {
 
 interface ToggleViewAction {
   type: typeof TOGGLE_VIEW,
-  payload: string;
+  payload: number;
 }
 
 export type AuthModalActionTypes = OpenAction | CloseAction | ToggleViewAction;
@@ -27,7 +27,7 @@ export const closeModal = () => ({
   type: CLOSE,
 });
 
-export const toggleModalView = (view: string) => ({
+export const toggleModalView = (view: number) => ({
   type: TOGGLE_VIEW,
   payload: view,
 });
