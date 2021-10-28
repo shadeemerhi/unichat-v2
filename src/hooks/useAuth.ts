@@ -11,11 +11,15 @@ import {
 import { FirebaseError } from '@firebase/util';
 import '../firebase/firebase';
 
+import {
+  uniqueNamesGenerator, NumberDictionary, adjectives, animals,
+} from 'unique-names-generator';
+
 // Axios
 import axios, { AxiosResponse } from 'axios';
 
 // Redux
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   logUserIn,
   logUserOut,
@@ -26,11 +30,15 @@ import { User } from '../types/User';
 
 // eslint-disable-next-line import/no-named-as-default
 import FIREBASE_ERRORS from '../firebase/errors';
+import { UserState } from '../reducers/user';
+import { AppState } from '../../store';
 
 const auth = getAuth();
 
 const useAuth = () => {
+  // Redux
   const dispatch = useDispatch();
+  const userState: UserState = useSelector((state: AppState) => state.userState);
   const onGoogleSignIn = async () => signInWithPopup(auth, new GoogleAuthProvider());
 
   const signup = async (email: string, password: string) => {
@@ -48,16 +56,11 @@ const useAuth = () => {
         }
         throw new Error('A user with that email already exists');
       }
-      // Only new users will get here
-      const firebaseResponse = await createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
         auth,
         email,
         password,
       );
-      const newUser = firebaseResponse.user;
-      return await axios.post('/users', newUser);
-
-      // Will need to post to database
     } catch (error: any) {
       dispatch(setUserError(error.message));
       return dispatch(setUserLoading(false));
@@ -91,39 +94,48 @@ const useAuth = () => {
 
   const logout = () => auth.signOut();
 
-  const handleGoogleAuthUser = async (firebaseUserObject: any) => {
-    // Check if the user exists in the application database
-    const { data } = await findUserByFirebaseUID(
-      firebaseUserObject.uid,
-    );
-    if (data) {
-      return dispatch(logUserIn(data));
-    }
-    // Creating a new user
-    await axios.post('/users', firebaseUserObject);
-    return dispatch(logUserIn(firebaseUserObject, true));
-  };
-
   const findUserByFirebaseUID = async (uid: string): Promise<AxiosResponse<User>> => axios.get<User>(`/users/${uid}`);
 
   const findUserByEmail = async (email: string): Promise<AxiosResponse<User>> => axios.get<User>(`/users/email/${email}`);
 
   const isGoogleUser = (user: User) => user.providerData[0].providerId === 'google.com';
 
-  // Handles current user object state by subscribing to changes
+  const generateRandomUsername = (): string => {
+    const numberDictionary = NumberDictionary.generate({ min: 100, max: 999 });
+    return uniqueNamesGenerator({
+      dictionaries: [adjectives, animals, numberDictionary],
+      length: 3,
+      separator: '',
+      style: 'capital',
+    });
+  };
+
+  // Checks for user in application database (Mongo)
+  const findOrCreateApplicationUser = async (firebaseUserObject: any) => {
+    try {
+      const { data } = await findUserByFirebaseUID(firebaseUserObject.uid);
+      if (data) {
+        return dispatch(logUserIn(data));
+      }
+      // New users
+      const newUserResponse: AxiosResponse<User> = await axios.post('/users', {
+        ...firebaseUserObject,
+        username: generateRandomUsername(),
+      });
+      return dispatch(logUserIn(newUserResponse.data, true));
+    } catch (error: any) {
+      dispatch(setUserError(error.message));
+    }
+  };
+
+  // // Handles current user object state by subscribing to changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (!user) {
         return dispatch(logUserOut());
       }
-      if (user.providerData[0].providerId === 'google.com') {
-        return handleGoogleAuthUser(user);
-      }
-      // Detect new users
-      if (user.metadata.creationTime === user.metadata.lastSignInTime) {
-        return dispatch(logUserIn(user, true));
-      }
-      return dispatch(logUserIn(user));
+      if (userState.user) return;
+      return findOrCreateApplicationUser(user);
     });
     return unsubscribe;
   }, []);

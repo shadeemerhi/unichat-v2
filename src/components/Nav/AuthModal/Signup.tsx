@@ -13,14 +13,15 @@ import { AppState } from '../../../../store';
 // Authentication hook
 import useAuth from '../../../hooks/useAuth';
 
-interface LoginProps {
-  handleModalViewToggle: (view: string) => void;
+interface SignUpProps {
+  signup: any;
+  handleModalViewToggle: (view: number) => void;
   classes: any;
 }
 
-const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
+const SignUp = ({ signup, handleModalViewToggle, classes }: SignUpProps): JSX.Element => {
   // Authentication functions
-  const { signup } = useAuth();
+  // const { signup } = useAuth();
   const dispatch = useDispatch();
 
   // Redux state
@@ -46,7 +47,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
 
     dispatch(setUserLoading(true));
     try {
-      signup(email, password);
+      await signup(email, password);
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +55,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
 
   return (
     <form className={classes.formContainer} onSubmit={onSubmit}>
-      <p className={`${classes.headerText} no_margin`}>Create an Account</p>
+      <p className={`${classes.headerText} ${classes.coloredText} no_margin`}>Create an Account</p>
       <input
         type="email"
         placeholder="email"
@@ -81,15 +82,15 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
       {/* Will change below to error container */}
       <span className={classes.toggleViewContainer}>
         {userState.error
-          && <p className={`${classes.toggleViewText} no_margin`}>{userState.error}</p>}
+          && <p className={`${classes.toggleViewText} no_margin cursor`}>{userState.error}</p>}
       </span>
       <button type="submit" className={classes.submitButton}>{userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Sign Up'}</button>
       <span className={classes.toggleViewContainer}>
         Already have an account?
-        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle('login')}>Login</p>
+        <p className={`${classes.toggleViewText} no_margin`} onClick={() => handleModalViewToggle(0)}>Login</p>
       </span>
     </form>
   );
 };
 
-export default Login;
+export default SignUp;

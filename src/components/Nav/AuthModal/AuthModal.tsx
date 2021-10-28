@@ -16,6 +16,7 @@ import { AppState } from '../../../../store';
 // Components
 import Login from './Login';
 import SignUp from './Signup';
+import CreateUserName from './CreateUserName';
 import GoogleLogin from './GoogleLogin';
 
 // Modal box styling object
@@ -37,9 +38,12 @@ const modalBoxStyle = {
 
 const useStyles = makeStyles((theme: Theme) => ({
   headerText: {
-    color: theme.palette.primary.main,
     marginBottom: '10px',
     fontSize: '16pt',
+  },
+
+  coloredText: {
+    color: theme.palette.primary.main,
   },
 
   outerFormContainer: {
@@ -79,7 +83,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   toggleViewText: {
     color: theme.palette.primary.main,
     marginLeft: '4px',
-    cursor: 'pointer',
   },
 
   googleButton: {
@@ -96,7 +99,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 }));
 
-const AuthModal = (): JSX.Element => {
+interface AuthModalProps {
+  login: any;
+  signup: any;
+  onGoogleSignIn: any;
+}
+
+const AuthModal = ({ login, signup, onGoogleSignIn }: AuthModalProps): JSX.Element => {
   // Styles
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -109,19 +118,23 @@ const AuthModal = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const handleClose = () => {
+    // Prevent modal close without username creation/acceptance
+    // if (view === 2) return; // Will change view to 2 after development is complete
     dispatch(closeModal());
+    if (userState.user) dispatch(setUserLoading(false));
   };
 
-  const handleModalViewToggle = (view: string): void => {
+  const handleModalViewToggle = (view: number): void => {
     dispatch(toggleModalView(view));
   };
 
   useEffect(() => {
     if (userState.user) {
       if (userState.firstLogin) {
-        return handleModalViewToggle('lol');
+        handleModalViewToggle(2);
+      } else {
+        dispatch(closeModal());
       }
-      dispatch(closeModal());
       dispatch(setUserLoading(false));
     }
   }, [userState.user]);
@@ -135,11 +148,27 @@ const AuthModal = (): JSX.Element => {
     >
       <Box sx={modalBoxStyle}>
         <div className={classes.outerFormContainer}>
-          {view === 'login' && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 'signup' && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 'lol' && <p>Welcome new user</p>}
-          <p>OR</p>
-          <GoogleLogin classes={classes} />
+          {view === 0 && (
+            <Login
+              handleModalViewToggle={handleModalViewToggle}
+              classes={classes}
+              login={login}
+            />
+          )}
+          {view === 1 && (
+            <SignUp
+              signup={signup}
+              handleModalViewToggle={handleModalViewToggle}
+              classes={classes}
+            />
+          )}
+          {view < 2 && (
+          <>
+            <p>OR</p>
+            <GoogleLogin onGoogleSignIn={onGoogleSignIn} classes={classes} />
+          </>
+          )}
+          {view === 2 && <CreateUserName classes={classes} />}
         </div>
       </Box>
     </Modal>
