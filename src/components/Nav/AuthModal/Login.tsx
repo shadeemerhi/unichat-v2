@@ -14,16 +14,17 @@ import { AppState } from '../../../../store';
 import useAuth from '../../../hooks/useAuth';
 
 interface LoginProps {
+  login: any;
   handleModalViewToggle: (view: number) => void;
   classes: any;
 }
 
-const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
+const Login = ({ login, handleModalViewToggle, classes }: LoginProps): JSX.Element => {
   // Redux
   const dispatch = useDispatch();
   const userState = useSelector((state: AppState) => state.userState);
   // Authentication functions
-  const { login } = useAuth();
+  // const { login } = useAuth();
 
   // Local state
   const [email, setEmail] = useState<string>('');

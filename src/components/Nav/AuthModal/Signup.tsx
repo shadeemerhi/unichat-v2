@@ -13,14 +13,15 @@ import { AppState } from '../../../../store';
 // Authentication hook
 import useAuth from '../../../hooks/useAuth';
 
-interface LoginProps {
+interface SignUpProps {
+  signup: any;
   handleModalViewToggle: (view: number) => void;
   classes: any;
 }
 
-const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
+const SignUp = ({ signup, handleModalViewToggle, classes }: SignUpProps): JSX.Element => {
   // Authentication functions
-  const { signup } = useAuth();
+  // const { signup } = useAuth();
   const dispatch = useDispatch();
 
   // Redux state
@@ -46,7 +47,7 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
 
     dispatch(setUserLoading(true));
     try {
-      signup(email, password);
+      await signup(email, password);
     } catch (error) {
       console.log(error);
     }
@@ -92,4 +93,4 @@ const Login = ({ handleModalViewToggle, classes }: LoginProps): JSX.Element => {
   );
 };
 
-export default Login;
+export default SignUp;

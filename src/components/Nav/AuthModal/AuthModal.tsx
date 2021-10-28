@@ -99,7 +99,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 }));
 
-const AuthModal = (): JSX.Element => {
+interface AuthModalProps {
+  login: any;
+  signup: any;
+  onGoogleSignIn: any;
+}
+
+const AuthModal = ({ login, signup, onGoogleSignIn }: AuthModalProps): JSX.Element => {
   // Styles
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -113,7 +119,7 @@ const AuthModal = (): JSX.Element => {
 
   const handleClose = () => {
     // Prevent modal close without username creation/acceptance
-    if (view === 0) return; // Will change view to 2 after development is complete
+    // if (view === 2) return; // Will change view to 2 after development is complete
     dispatch(closeModal());
     if (userState.user) dispatch(setUserLoading(false));
   };
@@ -125,9 +131,10 @@ const AuthModal = (): JSX.Element => {
   useEffect(() => {
     if (userState.user) {
       if (userState.firstLogin) {
-        return handleModalViewToggle(2);
+        handleModalViewToggle(2);
+      } else {
+        dispatch(closeModal());
       }
-      dispatch(closeModal());
       dispatch(setUserLoading(false));
     }
   }, [userState.user]);
@@ -141,17 +148,27 @@ const AuthModal = (): JSX.Element => {
     >
       <Box sx={modalBoxStyle}>
         <div className={classes.outerFormContainer}>
-          {/* {view === 0
-                && <Login handleModalViewToggle={handleModalViewToggle} classes={classes} />}
-          {view === 1
-                && <SignUp handleModalViewToggle={handleModalViewToggle} classes={classes} />}
+          {view === 0 && (
+            <Login
+              handleModalViewToggle={handleModalViewToggle}
+              classes={classes}
+              login={login}
+            />
+          )}
+          {view === 1 && (
+            <SignUp
+              signup={signup}
+              handleModalViewToggle={handleModalViewToggle}
+              classes={classes}
+            />
+          )}
           {view < 2 && (
           <>
             <p>OR</p>
-            <GoogleLogin classes={classes} />
+            <GoogleLogin onGoogleSignIn={onGoogleSignIn} classes={classes} />
           </>
-          )} */}
-          {true && <CreateUserName classes={classes} />}
+          )}
+          {view === 2 && <CreateUserName classes={classes} />}
         </div>
       </Box>
     </Modal>
