@@ -81,9 +81,6 @@ const useAuth = () => {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       let errorMessage = error.message;
-      if (error?.response?.status === 500) {
-        errorMessage = 'There seems to be a problem on our end';
-      }
       if (error instanceof FirebaseError) {
         errorMessage = FIREBASE_ERRORS[error.message] || FIREBASE_ERRORS.default;
       }
@@ -122,9 +119,13 @@ const useAuth = () => {
         ...firebaseUserObject,
         username: generateRandomUsername(),
       });
-      return dispatch(logUserIn(newUserResponse.data, true));
+      return dispatch(logUserIn(newUserResponse.data, true, false));
     } catch (error: any) {
-      dispatch(setUserError(error.message));
+      let errorMessage = error.message;
+      if (error?.response?.status === 500) {
+        errorMessage = FIREBASE_ERRORS.internalServer;
+      }
+      dispatch(setUserError(errorMessage));
     }
   };
 
