@@ -119,7 +119,7 @@ const useAuth = () => {
         ...firebaseUserObject,
         username: generateRandomUsername(),
       });
-      return dispatch(logUserIn(newUserResponse.data, true));
+      return dispatch(logUserIn(newUserResponse.data, true, false));
     } catch (error: any) {
       let errorMessage = error.message;
       if (error?.response?.status === 500) {
