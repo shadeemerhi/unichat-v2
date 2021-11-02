@@ -31,7 +31,7 @@ const AccountMenu = (): JSX.Element => {
   const theme = useTheme();
   const classes = useStyles(theme);
   // State
-  const user: User = useSelector((state: AppState) => state.userState.user);
+  const user: User | null = useSelector((state: AppState) => state.userState.user);
 
   const { logout } = useAuth();
 
@@ -49,7 +49,7 @@ const AccountMenu = (): JSX.Element => {
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-          <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL} />
+          <Avatar sx={{ width: 32, height: 32 }} src={user?.photoURL} />
         </IconButton>
       </Box>
       <Menu
@@ -88,7 +88,7 @@ const AccountMenu = (): JSX.Element => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Avatar src={user.photoURL} />
+          <Avatar src={user?.photoURL} />
           {' '}
           My account
         </MenuItem>
