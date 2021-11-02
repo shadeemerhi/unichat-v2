@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useState, useEffect, FormEvent } from 'react';
 
 // MUI
@@ -23,9 +25,9 @@ const UserName = ({ classes }: CreateUserNameProps): JSX.Element => {
   const userState: UserState = useSelector((state: AppState) => state.userState);
 
   // Local state
-  const [username, setUsername] = useState('');
+  const [customUsername, setCustomUsername] = useState('');
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent, acceptedDefaultUsername = false) => {
     event.preventDefault();
     if (userState.error) {
       dispatch(setUserError(''));
@@ -33,7 +35,7 @@ const UserName = ({ classes }: CreateUserNameProps): JSX.Element => {
     dispatch(setUserLoading(true));
 
     try {
-      const existingUserResponse: AxiosResponse<User> = await axios.get(`/users/username/${username}`);
+      const existingUserResponse: AxiosResponse<User> = await axios.get(`/users/username/${customUsername}`);
 
       // Check if an existing user has username
       if (existingUserResponse.data) {
@@ -42,13 +44,17 @@ const UserName = ({ classes }: CreateUserNameProps): JSX.Element => {
       }
 
       const updatedUserResponse: AxiosResponse<User> = await axios.put(
-        `/users/username/${userState.user?.uid}`,
-        { username },
+        `/users/${userState.user?.uid}`,
+        {
+          ...userState.user,
+          username: acceptedDefaultUsername ? userState.user?.username : customUsername,
+          acceptedDefaultUsername,
+        },
       );
 
       if (updatedUserResponse.data) {
         dispatch(setUserLoading(false));
-        dispatch(logUserIn(updatedUserResponse.data));
+        dispatch(logUserIn(updatedUserResponse.data, true, true));
       }
     } catch (error: any) {
       dispatch(setUserError(error.message));
@@ -58,7 +64,10 @@ const UserName = ({ classes }: CreateUserNameProps): JSX.Element => {
   };
 
   return (
-    <form className={classes.formContainer}>
+    <form
+      className={classes.formContainer}
+      onSubmit={(event: React.FormEvent) => handleSubmit(event)}
+    >
       <p className={classes.headerText}>
         Welcome to
         {' '}
@@ -69,19 +78,26 @@ const UserName = ({ classes }: CreateUserNameProps): JSX.Element => {
         type="text"
         placeholder="username"
         className={classes.formInput}
-        value={username}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setUsername(event.target.value)}
+        value={customUsername}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setCustomUsername(
+          event.target.value,
+        )}
       />
       <span className={classes.toggleViewContainer}>
         {userState.error
           && <p className={`${classes.toggleViewText} no_margin cursor`}>{userState.error}</p>}
       </span>
-      <button type="submit" className={classes.submitButton} onClick={handleSubmit}>
+      <button type="submit" className={classes.submitButton}>
         {userState.loading ? <CircularProgress size={20} color="inherit" /> : 'Save'}
       </button>
       <br />
       <p className="no_margin">{userState.user?.username}</p>
-      <p className={`${classes.coloredText} no_margin small_font cursor`}>Continue with default</p>
+      <p
+        className={`${classes.coloredText} no_margin small_font cursor`}
+        onClick={(event: React.FormEvent) => handleSubmit(event, true)}
+      >
+        Continue with default
+      </p>
     </form>
   );
 };
