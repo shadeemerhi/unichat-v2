@@ -9,7 +9,7 @@ import { Theme } from '@mui/material';
 // Redux
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, toggleModalView } from '../../../actions/authModal';
-import { setUserLoading } from '../../../actions/user';
+import { setUserError, setUserLoading } from '../../../actions/user';
 import { UserState } from '../../../reducers/user';
 import { AppState } from '../../../../store';
 
@@ -119,8 +119,9 @@ const AuthModal = ({ login, signup, onGoogleSignIn }: AuthModalProps): JSX.Eleme
 
   const handleClose = () => {
     // Prevent modal close without username creation/acceptance
-    // if (view === 2) return; // Will change view to 2 after development is complete
+    if (view === 2 && !userState.setUsername) return;
     dispatch(closeModal());
+    dispatch(setUserError(''));
     if (userState.user) dispatch(setUserLoading(false));
   };
 
@@ -130,7 +131,7 @@ const AuthModal = ({ login, signup, onGoogleSignIn }: AuthModalProps): JSX.Eleme
 
   useEffect(() => {
     if (userState.user) {
-      if (userState.firstLogin) {
+      if (!userState.setUsername && userState.firstLogin) {
         handleModalViewToggle(2);
       } else {
         dispatch(closeModal());
